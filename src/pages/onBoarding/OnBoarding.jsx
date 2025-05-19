@@ -1,5 +1,9 @@
 function OnBoarding() {
-	return <></>;
+	return (
+		<>
+			<h1>OnBoarding</h1>
+		</>
+	);
 }
 
 export default OnBoarding;
