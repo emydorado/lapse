@@ -1,0 +1,49 @@
+#contenedor-register h2 {
+	margin: 0;
+}
+
+#contenedor-register p {
+	margin: 0;
+	margin-bottom: 5vh;
+}
+
+#contenedor-register {
+	margin-top: 5vh;
+	margin-left: 1vh;
+}
+
+.measurments {
+	display: flex;
+	gap: 20px;
+	padding-right: 30px;
+}
+
+.masurement {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.masurement input {
+	max-width: 40%;
+}
+
+.masurement input::placeholder {
+	text-align: center;
+	padding: 0;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+a {
+	color: #272d29;
+	font-weight: 800;
+}
+
+#contenedor-register form button {
+	margin-top: 7vh;
+}
