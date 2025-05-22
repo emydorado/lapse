@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import NavMenu from '../../components/navMenu/NavMenu';
 import './Home.css';
 
 function Home() {
@@ -6,9 +7,13 @@ function Home() {
 	navigate;
 
 	return (
-		<div id='home-container'>
-			<h1>Home</h1>
-		</div>
+		<>
+			<div id='home-container'>
+				<h2>Resumen de entrenamientos</h2>
+				<h2>Tus rutinas</h2>
+			</div>
+			<NavMenu />
+		</>
 	);
 }
 

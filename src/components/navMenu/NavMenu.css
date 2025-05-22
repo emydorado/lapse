@@ -1,0 +1,44 @@
+#navMenu-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin: 0;
+	background-color: #ffff;
+	padding: 0 10vh 2vh 10vh;
+	position: relative;
+	box-shadow: 2px -3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12.5px;
+}
+
+.primary-icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	position: absolute;
+	top: -25%;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.only-svg {
+	background-color: #272d29;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	border: solid 3px #ffff;
+	box-shadow: 2px -3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.only-svg svg {
+	padding-left: 6px;
+}
