@@ -4,6 +4,7 @@ import Register from './pages/register/Register';
 import Login from './pages/login/Login';
 import OnBoarding from './pages/onBoarding/OnBoarding';
 import Intro from './pages/intro/Intro';
+import TrainingGoals from './pages/onBoarding/TrainingGoals';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 					<Route path='/login' element={<Login />} />
 					<Route path='/onBoarding' element={<OnBoarding />} />
 					<Route path='/intro' element={<Intro />} />
+					<Route path='/trainingGoals' element={<TrainingGoals />} />
 				</Routes>
 			</BrowserRouter>
 		</>

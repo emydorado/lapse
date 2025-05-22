@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
+	const navigate = useNavigate();
+
 	return (
 		<>
 			<div id='contenedor-login'>
@@ -24,7 +27,9 @@ function Login() {
 						¿No tienes una cuenta? <Link to='/register'>Registrate</Link>
 					</p>
 
-					<button type='submit'>INICIAR SESIÓN</button>
+					<button type='submit' onClick={() => navigate('/onBoarding')}>
+						INICIAR SESIÓN
+					</button>
 				</form>
 			</div>
 		</>

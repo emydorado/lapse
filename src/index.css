@@ -16,65 +16,76 @@ h1 {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 2.375rem;
 	color: #272d29;
+	margin: 0;
 }
 
 h2 {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 1.75rem;
 	color: #272d29;
+	margin: 0;
 }
 
 h3 {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 1.312rem;
 	color: #272d29;
+	margin: 0;
 }
 
 h4 {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 1rem;
 	color: #272d29;
+	margin: 0;
 }
 
 h5 {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 0.75rem;
 	color: #272d29;
+	margin: 0;
 }
 
 .extra-big-Text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 2.375rem;
 	color: #272d29;
+	margin: 0;
 }
 
 .big-text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 1.75rem;
 	color: #272d29;
+	margin: 0;
 }
 
 .medium-text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 1.312rem;
 	color: #272d29;
+	margin: 0;
 }
 
 .regular-text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 1rem;
+	margin: 0;
 }
 
 .small-text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 0.75rem;
 	color: #272d29;
+	margin: 0;
 }
 
 .extra-small-text {
 	font-family: 'DM Sans', sans-serif;
 	font-size: 0.562rem;
 	color: #272d29;
+	margin: 0;
 }
 
 button {

@@ -1,0 +1,34 @@
+#onBorading-container {
+	margin-left: 1vh;
+	margin-right: 1vh;
+	margin-top: 5vh;
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+}
+
+.mid-section img {
+	height: 17vh;
+}
+
+.mid-section {
+	display: flex;
+	align-items: center;
+	margin-top: 8vh;
+}
+
+.mid-section li {
+	font-size: 14px;
+	margin: 12px;
+}
+
+.next-step {
+	margin-top: 18vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.next-step p {
+	text-align: center;
+}

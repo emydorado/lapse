@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Register.css';
 
 function Register() {
+	const navigate = useNavigate();
 	return (
 		<>
 			<div id='contenedor-register'>
@@ -50,7 +52,9 @@ function Register() {
 					<p>
 						¿Ya estás registrado? <Link to='/login'>Inicia sesión</Link>
 					</p>
-					<button type='submit'>REGISTRARME</button>
+					<button type='submit' onClick={() => navigate('/onBoarding')}>
+						REGISTRARME
+					</button>
 				</form>
 			</div>
 		</>
