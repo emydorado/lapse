@@ -1,0 +1,23 @@
+#contenedor-login h2 {
+	margin: 0;
+}
+
+#contenedor-login p {
+	margin: 0;
+	margin-bottom: 5vh;
+}
+
+#contenedor-login {
+	margin-top: 5vh;
+	margin-left: 1vh;
+}
+
+#contenedor-login form {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+#contenedor-login form button {
+	margin-top: 33.5vh;
+}

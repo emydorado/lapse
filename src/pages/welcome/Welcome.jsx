@@ -15,7 +15,9 @@ function Welcome() {
 
 				<div className='buttons'>
 					<button onClick={() => navigate('/register')}>REGISTRARME</button>
-					<button className='secondary-button'>INICIAR SESIÓN</button>
+					<button onClick={() => navigate('/login')} className='secondary-button'>
+						INICIAR SESIÓN
+					</button>
 				</div>
 			</div>
 		</>
