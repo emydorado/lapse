@@ -1,64 +1,162 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { auth, db } from '../../services/firebase/firebaseConfig'; // Make sure you have firebase configured
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import './Register.css';
 
 function Register() {
-	const navigate = useNavigate();
-	return (
-		<>
-			<div id='contenedor-register'>
-				<h2>REGISTRATE EN LAPSE</h2>
-				<p className='regular-text'>Completa los siguientes datos</p>
-				<form>
-					<div className='user-info'>
-						<label className='input-label' htmlFor='name'>
-							NOMBRE
-						</label>
-						<input type='text' placeholder='Escribe tu nombre' required />
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    age: '',
+    weight: '',
+    height: ''
+  });
+  const [error, setError] = useState('');
 
-						<label className='input-label' htmlFor='email'>
-							CORREO
-						</label>
-						<input type='email' placeholder='Ejemplo@email.com' required />
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-						<label className='input-label' htmlFor='password'>
-							CONTRASEÑA
-						</label>
-						<input type='password' placeholder='Minimo 6 digitos' required />
-					</div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-					<div className='measurments'>
-						<div className='masurement'>
-							<label className='input-label' htmlFor='age'>
-								EDAD
-							</label>
-							<input type='number' placeholder='#' required />
-						</div>
+    try {
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      
+      const user = userCredential.user;
 
-						<div className='masurement'>
-							<label className='input-label' htmlFor='weigth'>
-								PESO (KG)
-							</label>
-							<input type='number' placeholder='#' required />
-						</div>
+      // Save additional user data to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        name: formData.name,
+        email: formData.email,
+        age: formData.age,
+        weight: formData.weight,
+        height: formData.height,
+        createdAt: new Date()
+      });
 
-						<div className='masurement'>
-							<label className='input-label' htmlFor='password'>
-								ESTATURA (CM)
-							</label>
-							<input type='number' placeholder='#' required />
-						</div>
-					</div>
-					<p>
-						¿Ya estás registrado? <Link to='/login'>Inicia sesión</Link>
-					</p>
-					<button type='submit' onClick={() => navigate('/onBoarding')}>
-						REGISTRARME
-					</button>
-				</form>
-			</div>
-		</>
-	);
+      // Navigate to onboarding after successful registration
+      navigate('/onBoarding');
+    } catch (error) {
+      setError(error.message);
+      console.error('Registration error:', error);
+    }
+  };
+
+  return (
+    <>
+      <div id='contenedor-register'>
+        <h2>REGISTRATE EN LAPSE</h2>
+        <p className='regular-text'>Completa los siguientes datos</p>
+        {error && <p className="error-message">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className='user-info'>
+            <label className='input-label' htmlFor='name'>
+              NOMBRE
+            </label>
+            <input 
+              type='text' 
+              name="name"
+              placeholder='Escribe tu nombre' 
+              value={formData.name}
+              onChange={handleChange}
+              required 
+            />
+
+            <label className='input-label' htmlFor='email'>
+              CORREO
+            </label>
+            <input 
+              type='email' 
+              name="email"
+              placeholder='Ejemplo@email.com' 
+              value={formData.email}
+              onChange={handleChange}
+              required 
+            />
+
+            <label className='input-label' htmlFor='password'>
+              CONTRASEÑA
+            </label>
+            <input 
+              type='password' 
+              name="password"
+              placeholder='Minimo 6 digitos' 
+              value={formData.password}
+              onChange={handleChange}
+              required 
+              minLength="6"
+            />
+          </div>
+
+          <div className='measurments'>
+            <div className='masurement'>
+              <label className='input-label' htmlFor='age'>
+                EDAD
+              </label>
+              <input 
+                type='number' 
+                name="age"
+                placeholder='#' 
+                value={formData.age}
+                onChange={handleChange}
+                required 
+              />
+            </div>
+
+            <div className='masurement'>
+              <label className='input-label' htmlFor='weight'>
+                PESO (KG)
+              </label>
+              <input 
+                type='number' 
+                name="weight"
+                placeholder='#' 
+                value={formData.weight}
+                onChange={handleChange}
+                required 
+              />
+            </div>
+
+            <div className='masurement'>
+              <label className='input-label' htmlFor='height'>
+                ESTATURA (CM)
+              </label>
+              <input 
+                type='number' 
+                name="height"
+                placeholder='#' 
+                value={formData.height}
+                onChange={handleChange}
+                required 
+              />
+            </div>
+          </div>
+          <p>
+            ¿Ya estás registrado? <Link to='/login'>Inicia sesión</Link>
+          </p>
+          <button type='submit'>
+            REGISTRARME
+          </button>
+        </form>
+      </div>
+    </>
+  );
 }
 
 export default Register;
