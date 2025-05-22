@@ -5,7 +5,11 @@ function Home() {
 	const navigate = useNavigate();
 	navigate;
 
-	return <div id='home-container'></div>;
+	return (
+		<div id='home-container'>
+			<h1>Home</h1>
+		</div>
+	);
 }
 
 export default Home;
