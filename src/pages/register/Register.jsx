@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../services/firebase/firebaseConfig'; // Make sure you have firebase configured
+import { auth, db } from '../../services/firebase/firebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import './Register.css';
@@ -17,6 +17,7 @@ function Register() {
     height: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,9 +30,10 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      // Create user with email and password
+      // 1. Crear usuario (esto también lo autentica automáticamente)
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
@@ -40,7 +42,7 @@ function Register() {
       
       const user = userCredential.user;
 
-      // Save additional user data to Firestore
+      // 2. Guardar datos adicionales en Firestore
       await setDoc(doc(db, 'users', user.uid), {
         name: formData.name,
         email: formData.email,
@@ -50,11 +52,27 @@ function Register() {
         createdAt: new Date()
       });
 
-      // Navigate to onboarding after successful registration
+      // 3. Redirigir al onboarding (el usuario ya está autenticado)
       navigate('/onBoarding');
+      
     } catch (error) {
-      setError(error.message);
-      console.error('Registration error:', error);
+      let errorMessage = 'Error al registrarse';
+      switch(error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'El correo ya está en uso';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Correo electrónico no válido';
+          break;
+        default:
+          errorMessage = error.message;
+      }
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,6 +134,8 @@ function Register() {
                 value={formData.age}
                 onChange={handleChange}
                 required 
+                min="12"
+                max="120"
               />
             </div>
 
@@ -130,6 +150,8 @@ function Register() {
                 value={formData.weight}
                 onChange={handleChange}
                 required 
+                min="30"
+                max="300"
               />
             </div>
 
@@ -144,14 +166,16 @@ function Register() {
                 value={formData.height}
                 onChange={handleChange}
                 required 
+                min="100"
+                max="250"
               />
             </div>
           </div>
           <p>
             ¿Ya estás registrado? <Link to='/login'>Inicia sesión</Link>
           </p>
-          <button type='submit'>
-            REGISTRARME
+          <button type='submit' disabled={loading}>
+            {loading ? 'REGISTRANDO...' : 'REGISTRARME'}
           </button>
         </form>
       </div>
