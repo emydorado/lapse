@@ -32,9 +32,11 @@ function SetUpRoutine() {
 						Ve a la estación de toma de pulso para identificar tu ritmo cardiaco, esta información es la que tomamos de
 						base para personalizar tus tiempos de descanso en tu rutina.
 					</p>
+
 					<NotDetected />
 					<Calculating />
 					<HeartRate />
+
 					<p className='regular-text'>Coloca tu dedo indice en el sensor y mantenlo presionado.</p>
 				</div>
 			</div>
