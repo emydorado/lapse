@@ -30,7 +30,7 @@ function SetUpRoutine() {
 				<h1>Configura la rutina</h1>
 				<svg
 					onClick={() => navigate('/home')}
-					class='w-6 h-6 text-gray-800 dark:text-white'
+					className='w-6 h-6 text-gray-800 dark:text-white'
 					aria-hidden='true'
 					xmlns='http://www.w3.org/2000/svg'
 					width='24'
@@ -40,9 +40,9 @@ function SetUpRoutine() {
 				>
 					<path
 						stroke='currentColor'
-						stroke-linecap='round'
-						stroke-linejoin='round'
-						stroke-width='2'
+						strokeLinecap='round'
+						strokeLinejoin='round'
+						strokeWidth='2'
 						d='M6 18 17.94 6M18 18 6.06 6'
 					/>
 				</svg>

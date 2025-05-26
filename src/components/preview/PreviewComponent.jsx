@@ -14,7 +14,7 @@ function PreviewComponent({ name, number_excercises, img }) {
 				<div className='routine-title'>
 					<svg
 						className='w-6 h-6 text-gray-800 dark:text-white'
-						ariaHidden='true'
+						aria-hidden='true'
 						xmlns='http://www.w3.org/2000/svg'
 						width='50'
 						height='50'
@@ -50,9 +50,6 @@ function PreviewComponent({ name, number_excercises, img }) {
 							number={exercise.number}
 						/>
 					))}
-				</div>
-				<div className='button-wrapper'>
-					<button>COMENZAR RUTINA</button>
 				</div>
 			</div>
 		</div>

@@ -7,8 +7,8 @@ import './Preview.css';
 function Preview() {
 	const { id } = useParams();
 	const routine = routines.find((rec) => rec.id === parseInt(id));
-
 	const navigate = useNavigate();
+	const handleNavigate = () => navigate(`/routine/${id}`);
 
 	return (
 		<>
@@ -40,6 +40,9 @@ function Preview() {
 				name={routine.name}
 				number_excercises={routine.number_excercises}
 			/>
+			<div className='button-wrapper'>
+				<button onClick={handleNavigate}>COMENZAR RUTINA</button>
+			</div>
 		</>
 	);
 }

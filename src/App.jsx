@@ -22,7 +22,7 @@ function App() {
 					<Route path='/login' element={<Login />} />
 					<Route path='/onBoarding' element={<OnBoarding />} />
 					<Route path='/trainingGoals' element={<TrainingGoals />} />
-					<Route path='/routine' element={<Routine />} />
+					<Route path='/routine/:id' element={<Routine />} />
 					<Route path='/setUpRoutine' element={<SetUpRoutine />} />
 					<Route path='/selectRoutine' element={<SelectRoutine />} />
 					<Route path='/home' element={<Home />} />
