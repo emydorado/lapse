@@ -1,0 +1,50 @@
+.routine-title {
+	display: flex;
+	align-items: center;
+}
+
+.routine-title h2 {
+	margin-top: 3px;
+}
+
+.img-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.img-wrapper img {
+	height: 180px;
+}
+
+.excercises-section {
+	border-radius: 15px;
+	border-top: 1px solid #000000;
+	margin-left: 1px;
+	width: 100%;
+}
+
+.excercises-section h3 {
+	margin-left: 3vh;
+	margin-top: 2vh;
+	color: #7d9807;
+}
+
+.exercises-cards {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow-y: auto;
+	height: 400px;
+	scroll-snap-type: y mandatory;
+}
+
+.exercises-cards::-webkit-scrollbar {
+	display: none;
+}
+
+.button-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}

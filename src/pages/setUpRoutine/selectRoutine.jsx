@@ -5,7 +5,6 @@ import './SelectRoutine.css';
 
 function SelectRoutine() {
 	const navigate = useNavigate();
-	navigate;
 
 	return (
 		<>
@@ -54,15 +53,8 @@ function SelectRoutine() {
 							/>
 						</svg>
 					</div>
-					<div className='routine-card'>
-						{routines.map((routine) => (
-							<RoutineCard
-								key={routine.id}
-								name={routine.name}
-								img={routine.img}
-								number_excercises={routine.number_excercises}
-							/>
-						))}
+					<div className='your-routine-card'>
+						<p className='regulars-text'>Aún no hay rutinas creadas por ti</p>
 					</div>
 
 					<p className='regular-text'>
@@ -81,6 +73,7 @@ function SelectRoutine() {
 								name={routine.name}
 								img={routine.img}
 								number_excercises={routine.number_excercises}
+								id={routine.id}
 							/>
 						))}
 					</div>
@@ -89,9 +82,6 @@ function SelectRoutine() {
 							<u>Ver más</u>
 						</b>
 					</p>
-				</div>
-				<div className='button-wrapper'>
-					<button onClick={() => navigate('/preview')}>continuar</button>
 				</div>
 			</div>
 		</>

@@ -2,16 +2,16 @@ import { useNavigate } from 'react-router-dom';
 
 import './RoutineCard.css';
 
-function RoutineCard({ img, name, number_excercises }) {
+function RoutineCard({ id, img, name, number_excercises }) {
 	const navigate = useNavigate();
-	navigate;
+	const handleNavigate = () => navigate(`/preview/${id}`);
 
 	return (
-		<div id='routine-card-container'>
+		<div id='routine-card-container' onClick={handleNavigate}>
 			<img src={img} alt={name} />
 			<div className='routine-info'>
-				<h4>{name}</h4>
-				<p className='small-text'>{number_excercises} ejercicios</p>
+				<h3>{name}</h3>
+				<p className='regular-text'>{number_excercises} ejercicios</p>
 			</div>
 		</div>
 	);

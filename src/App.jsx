@@ -27,7 +27,7 @@ function App() {
 					<Route path='/selectRoutine' element={<SelectRoutine />} />
 					<Route path='/home' element={<Home />} />
 					<Route path='/profile' element={<Profile />} />
-					<Route path='/preview' element={<Preview />} />
+					<Route path='/preview/:id' element={<Preview />} />
 				</Routes>
 			</BrowserRouter>
 		</>

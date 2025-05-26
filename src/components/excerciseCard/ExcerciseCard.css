@@ -1,0 +1,27 @@
+.exercise-info-section {
+	display: flex;
+	justify-content: space-around;
+}
+
+#exercise-card-container {
+	border-radius: 18px;
+	width: 88%;
+	padding: 10px;
+	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 7px 7px 7px 0;
+}
+
+#exercise-title {
+	margin-bottom: 1vh;
+	margin-top: 1vh;
+	font-size: 18px;
+}
+
+.series-section,
+.repetitions-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}

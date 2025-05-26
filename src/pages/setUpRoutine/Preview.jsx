@@ -1,9 +1,14 @@
 import { useNavigate } from 'react-router-dom';
+import PreviewComponent from '../../components/preview/PreviewComponent';
+import { useParams } from 'react-router-dom';
+import { routines } from '../../data/routines';
 import './Preview.css';
 
 function Preview() {
+	const { id } = useParams();
+	const routine = routines.find((rec) => rec.id === parseInt(id));
+
 	const navigate = useNavigate();
-	navigate;
 
 	return (
 		<>
@@ -29,21 +34,12 @@ function Preview() {
 				</svg>
 			</div>
 
-			<div id='preview-container'>
-				<svg
-					className='w-6 h-6 text-gray-800 dark:text-white'
-					aria-hidden='true'
-					xmlns='http://www.w3.org/2000/svg'
-					width='24'
-					height='24'
-					fill='none'
-					viewBox='0 0 24 24'
-				>
-					<path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m14 8-4 4 4 4' />
-				</svg>
-
-				<h2>RUTINA DE</h2>
-			</div>
+			<PreviewComponent
+				key={routine.id}
+				img={routine.img}
+				name={routine.name}
+				number_excercises={routine.number_excercises}
+			/>
 		</>
 	);
 }
