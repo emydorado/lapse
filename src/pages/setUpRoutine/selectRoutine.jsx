@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { routines } from '../../data/routines.js';
+import RoutineCard from '../../components/routineCard/RoutineCard';
 import './SelectRoutine.css';
 
 function SelectRoutine() {
@@ -11,7 +13,7 @@ function SelectRoutine() {
 				<h1>Configura la rutina</h1>
 				<svg
 					onClick={() => navigate('/home')}
-					class='w-6 h-6 text-gray-800 dark:text-white'
+					className='w-6 h-6 text-gray-800 dark:text-white'
 					aria-hidden='true'
 					xmlns='http://www.w3.org/2000/svg'
 					width='24'
@@ -21,9 +23,9 @@ function SelectRoutine() {
 				>
 					<path
 						stroke='currentColor'
-						stroke-linecap='round'
-						stroke-linejoin='round'
-						stroke-width='2'
+						strokeLinecap='round'
+						strokeLinejoin='round'
+						strokeWidth='2'
 						d='M6 18 17.94 6M18 18 6.06 6'
 					/>
 				</svg>
@@ -31,40 +33,66 @@ function SelectRoutine() {
 			<div id='selectRoutine-container'>
 				<h2>2. Selecciona tu rutina</h2>
 
-				<div className='routines-container'>
-					<h3>rutinas creadas por ti</h3>
-					<svg
-						class='w-6 h-6 text-gray-800 dark:text-white'
-						aria-hidden='true'
-						xmlns='http://www.w3.org/2000/svg'
-						width='24'
-						height='24'
-						fill='none'
-						viewBox='0 0 24 24'
-					>
-						<path
-							stroke='currentColor'
-							stroke-linecap='round'
-							stroke-linejoin='round'
-							stroke-width='2'
-							d='M5 12h14m-7 7V5'
-						/>
-					</svg>
-				</div>
-				<p className='regular-text'>
-					<b>
-						<u>Ver más</u>
-					</b>
-				</p>
+				<div className='created-routines'>
+					<div className='routines-container'>
+						<h3>rutinas creadas por ti</h3>
+						<svg
+							className='w-6 h-6 text-gray-800 dark:text-white'
+							aria-hidden='true'
+							xmlns='http://www.w3.org/2000/svg'
+							width='24'
+							height='24'
+							fill='none'
+							viewBox='0 0 24 24'
+						>
+							<path
+								stroke='currentColor'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth='2'
+								d='M5 12h14m-7 7V5'
+							/>
+						</svg>
+					</div>
+					<div className='routine-card'>
+						{routines.map((routine) => (
+							<RoutineCard
+								key={routine.id}
+								name={routine.name}
+								img={routine.img}
+								number_excercises={routine.number_excercises}
+							/>
+						))}
+					</div>
 
-				<div className='routines-container'>
-					<h3>rutinas sugeridas</h3>
+					<p className='regular-text'>
+						<b>
+							<u>Ver más</u>
+						</b>
+					</p>
 				</div>
-				<p className='regular-text'>
-					<b>
-						<u>Ver más</u>
-					</b>
-				</p>
+
+				<div className='sugestions-container'>
+					<h3>rutinas sugeridas</h3>
+					<div className='routine-card'>
+						{routines.map((routine) => (
+							<RoutineCard
+								key={routine.id}
+								name={routine.name}
+								img={routine.img}
+								number_excercises={routine.number_excercises}
+							/>
+						))}
+					</div>
+					<p className='regular-text'>
+						<b>
+							<u>Ver más</u>
+						</b>
+					</p>
+				</div>
+				<div className='button-wrapper'>
+					<button onClick={() => navigate('/preview')}>continuar</button>
+				</div>
 			</div>
 		</>
 	);

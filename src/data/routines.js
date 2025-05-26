@@ -1,8 +1,12 @@
+import trenSuperior from '../assets/trenSuperior.png';
+import trenInferior from '../assets/trenInferior.png';
+import fullBody from '../assets/fullBody.png';
+
 export const routines = [
 	{
 		id: 1,
 		name: 'TREN SUPERIOR',
-		img: 'src/assets/trenSuperior.png',
+		img: trenSuperior,
 		number_excercises: 9,
 		excercises: [
 			{
@@ -64,7 +68,7 @@ export const routines = [
 	{
 		id: 2,
 		name: 'FULL BODY',
-		img: 'src/assets/trenSuperior.png',
+		img: fullBody,
 		number_excercises: 11,
 		excercises: [
 			{
@@ -138,7 +142,7 @@ export const routines = [
 	{
 		id: 3,
 		name: 'TREN INFERIOR',
-		img: 'src/assets/trenInferior.png',
+		img: trenInferior,
 		number_excercises: 8,
 		excercises: [
 			{

@@ -9,6 +9,7 @@ import SetUpRoutine from './pages/setUpRoutine/SetUpRoutine';
 import SelectRoutine from './pages/setUpRoutine/selectRoutine';
 import Routine from './pages/routine/Routine';
 import Profile from './pages/profile/Profile';
+import Preview from './pages/setUpRoutine/Preview';
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
 					<Route path='/selectRoutine' element={<SelectRoutine />} />
 					<Route path='/home' element={<Home />} />
 					<Route path='/profile' element={<Profile />} />
+					<Route path='/preview' element={<Preview />} />
 				</Routes>
 			</BrowserRouter>
 		</>

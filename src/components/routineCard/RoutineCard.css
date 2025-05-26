@@ -1,0 +1,20 @@
+#routine-card-container {
+	border-radius: 18px;
+	width: fit-content;
+	padding: 10px;
+	box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.1);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+}
+
+#routine-card-container img {
+	height: 120px;
+}
+
+#routine-card-container:hover {
+	outline: 2px solid #000000;
+}
+
+.routine-info {
+	margin-left: 10px;
+}

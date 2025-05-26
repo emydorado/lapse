@@ -1,0 +1,51 @@
+import { useNavigate } from 'react-router-dom';
+import './Preview.css';
+
+function Preview() {
+	const navigate = useNavigate();
+	navigate;
+
+	return (
+		<>
+			<div className='header'>
+				<h1>PREVIEW</h1>
+				<svg
+					onClick={() => navigate('/home')}
+					className='w-6 h-6 text-gray-800 dark:text-white'
+					aria-hidden='true'
+					xmlns='http://www.w3.org/2000/svg'
+					width='24'
+					height='24'
+					fill='none'
+					viewBox='0 0 24 24'
+				>
+					<path
+						stroke='currentColor'
+						strokeLinecap='round'
+						strokeLinejoin='round'
+						strokeWidth='2'
+						d='M6 18 17.94 6M18 18 6.06 6'
+					/>
+				</svg>
+			</div>
+
+			<div id='preview-container'>
+				<svg
+					className='w-6 h-6 text-gray-800 dark:text-white'
+					aria-hidden='true'
+					xmlns='http://www.w3.org/2000/svg'
+					width='24'
+					height='24'
+					fill='none'
+					viewBox='0 0 24 24'
+				>
+					<path stroke='currentColor' strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='m14 8-4 4 4 4' />
+				</svg>
+
+				<h2>RUTINA DE</h2>
+			</div>
+		</>
+	);
+}
+
+export default Preview;

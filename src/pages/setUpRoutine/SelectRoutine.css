@@ -1,11 +1,44 @@
 #selectRoutine-container {
 	margin-left: 2vh;
 	margin-right: 2vh;
-	margin-top: 5vh;
+	margin-top: 3vh;
 }
 
 .routines-container {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.routine-card {
+	display: flex;
+	gap: 16px;
+	overflow-x: auto;
+	padding-bottom: 10px;
+	scroll-snap-type: x mandatory;
+	scroll-padding: 20px;
+	max-width: 100%;
+}
+
+.routine-card::-webkit-scrollbar {
+	height: 8px;
+}
+
+#routine-card-container {
+	scroll-snap-align: start;
+	flex: 0 0 auto; /* evita que se compriman */
+}
+
+.sugestions-container {
+	margin-top: 5vh;
+	margin-bottom: 2.5vh;
+}
+
+.created-routines {
+	margin-top: 2vh;
+}
+
+.button-wrapper {
+	display: flex;
+	justify-content: center;
 }
