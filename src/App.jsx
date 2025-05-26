@@ -6,6 +6,7 @@ import OnBoarding from './pages/onBoarding/OnBoarding';
 import TrainingGoals from './pages/onBoarding/TrainingGoals';
 import Home from './pages/home/Home';
 import SetUpRoutine from './pages/setUpRoutine/SetUpRoutine';
+import SelectRoutine from './pages/setUpRoutine/selectRoutine';
 import Routine from './pages/routine/Routine';
 import Profile from './pages/profile/Profile';
 import './App.css';
@@ -22,6 +23,7 @@ function App() {
 					<Route path='/trainingGoals' element={<TrainingGoals />} />
 					<Route path='/routine' element={<Routine />} />
 					<Route path='/setUpRoutine' element={<SetUpRoutine />} />
+					<Route path='/selectRoutine' element={<SelectRoutine />} />
 					<Route path='/home' element={<Home />} />
 					<Route path='/profile' element={<Profile />} />
 				</Routes>
