@@ -1,99 +1,87 @@
-.modal-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.7);
+.actual-exercise-info-section {
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	z-index: 1000;
-}
-
-.modal-content {
-	background-color: white;
-	padding: 30px;
-	border-radius: 15px;
-	max-width: 400px;
-	width: 65%;
-	height: 360px;
-	text-align: center;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.last-modal-content {
-	background-color: white;
-	padding: 30px;
-	border-radius: 15px;
-	max-width: 400px;
-	width: 66%;
-	height: 360px;
-	text-align: center;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.modal-content p {
-	margin-bottom: 10px;
-	color: #272d29;
-}
-
-.modal-content h2 {
-	margin-top: 5px;
-}
-
-.modal-buttons {
-	display: flex;
-	justify-content: center;
-	gap: 15px;
+	justify-content: space-around;
+	gap: 60px;
 	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
-.recomendations-info {
-	margin-top: 40px;
-	gap: 20px;
+#Routine-container::-webkit-scrollbar {
+	display: none; /* Chrome, Safari */
 }
 
-.last-recomendations-info {
-	margin-top: 15px;
-	gap: 20px;
+.exercises-card-routine {
+	border-radius: 18px;
+	margin-top: -14px;
+	background-color: #ffffff;
+	position: relative;
+	z-index: 2;
+	padding: 10px 10px 150px 10px;
 }
 
-.last-recomendations-info p {
-	margin-bottom: 40px;
+.exercises-card-routine h2 {
+	margin: 0 10px 10px 10px;
 }
 
-.recomendations-info p {
-	margin-bottom: 40px;
+#card-actual-exercise {
+	border-radius: 18px;
+	width: 88%;
+	padding: 14px;
+	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 7px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
-#modal-cronometer {
-	font-size: 70px;
-	margin-top: 50px;
+#watch-tutorial-btn {
+	margin-left: 8px;
 }
 
-.heart-bpm-text {
+.only-info-actual-exercise {
+	margin-left: 20px;
+}
+
+#closed-exercise-card {
+	border-radius: 18px;
+	width: 90%;
+	padding: 10px;
+	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 10px 7px;
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
 	align-items: center;
-	gap: 6px;
+	justify-content: space-between;
 }
 
-.last-modal-content button {
-	width: 100%;
+.title-chevron {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 13vh;
 }
 
-.modal-content button {
-	width: 100%;
+.cronometer {
+	background-color: #272d29;
+	color: #ffffff;
+	height: 30vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.cronometer p {
+	color: #ffffff;
+}
+
+.cronometer h1 {
+	font-size: 70px;
+	color: #ffffff;
 }
 
 /*modal que cierra*/
