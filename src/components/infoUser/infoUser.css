@@ -1,24 +1,8 @@
-/* #info-user-card {
-	border-radius: 18px;
-	width: fit-content;
-	padding: 16px;
-	box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.3);
-	background-color: transparent;
-	transition: outline 0.3s ease;
-	margin: 7px 7px 7px 0;
-	width: 300px;
-	align-items: center;
-	justify-content: left;
-	display: flex;
-	flex-direction: column;
-} */
-
 #info-user-card {
 	border-radius: 18px;
 	width: 320px;
 	padding: 16px;
-
-	box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.3);
+	box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
 	background-color: transparent;
 	transition: outline 0.3s ease;
 	margin: 7px 7px 7px 0;
@@ -28,29 +12,29 @@
 	justify-content: flex-start;
 }
 
-.user-name p,
-.user-mail p,
-.user-edad p,
-.user-estatura p,
-.user-peso p {
-	margin-top: -4px;
-}
-
 .aditional-info {
 	display: flex;
 	flex-direction: row;
 }
 
-.user-edad,
-.user-estatura,
-.user-peso {
-	padding-right: 40px;
+.user-name,
+.user-mail {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 14px;
+	margin-bottom: 30px;
 }
 
-.user-name,
-.user-mail,
+.user-name {
+	margin-top: 5px;
+}
+
 .user-edad,
 .user-estatura,
 .user-peso {
-  padding-left: 16px;
+	padding-right: 18px;
+	display: flex;
+	flex-direction: row;
+	gap: 8px;
 }

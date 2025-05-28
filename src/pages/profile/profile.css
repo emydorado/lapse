@@ -1,7 +1,7 @@
 #selectRoutine-container {
 	margin-left: 2vh;
 	margin-right: 2vh;
-	margin-top: 3vh;
+	margin-top: 2vh;
 }
 
 .routines-container {
@@ -29,7 +29,7 @@
 }
 
 .sugestions-container {
-	margin-top: 1vh;
+	margin-top: 3vh;
 	margin-bottom: 2.5vh;
 	padding: 16px;
 }
@@ -48,17 +48,18 @@
 
 #info-user-container {
 	padding: 16px;
-	margin-top: 4vh;
+	margin-top: 1vh;
 }
 
 .tittle-container1,
 .tittle-container2 {
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 }
 
 .tittle-container1 h3,
 .tittle-container2 h3 {
 	margin-right: 28vh;
-  margin-bottom: 2.5vh;
+	margin-bottom: 1vh;
 }
