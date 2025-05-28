@@ -7,7 +7,7 @@ export default function SensorData() {
 		const socket = new WebSocket('ws://localhost:3001');
 
 		socket.onopen = () => {
-			console.log('✅ Conectado al WebSocket');
+			console.log('Conectado al WebSocket');
 		};
 
 		socket.onmessage = (event) => {
@@ -15,7 +15,7 @@ export default function SensorData() {
 		};
 
 		socket.onerror = (error) => {
-			console.error('❌ Error en WebSocket:', error);
+			console.error(' Error en WebSocket:', error);
 		};
 
 		socket.onclose = () => {
