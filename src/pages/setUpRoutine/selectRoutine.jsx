@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import NavMenu from '../../components/navMenu/NavMenu.jsx';
 import { routines } from '../../data/routines.js';
 import RoutineCard from '../../components/routineCard/RoutineCard';
 import './SelectRoutine.css';

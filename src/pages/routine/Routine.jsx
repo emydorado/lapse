@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { routines } from '../../data/routines';
-import Modal from '../../components/modal/Modal';
+import Modal from '../../components/Modal/Modal';
 import NavMenuRoutine from '../../components/navMenuRoutine/NavMenuRoutine';
 import './Routine.css';
 
