@@ -1,0 +1,85 @@
+.actual-exercise-info-section {
+	display: flex;
+	justify-content: space-around;
+	gap: 60px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#Routine-container::-webkit-scrollbar {
+	display: none; /* Chrome, Safari */
+}
+
+.exercises-card-routine {
+	border-radius: 18px;
+	margin-top: -14px;
+	background-color: #ffffff;
+	position: relative;
+	z-index: 2;
+	padding: 10px 10px 150px 10px;
+}
+
+.exercises-card-routine h2 {
+	margin: 0 10px 10px 10px;
+}
+
+#card-actual-exercise {
+	border-radius: 18px;
+	width: 88%;
+	padding: 14px;
+	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 7px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+#watch-tutorial-btn {
+	margin-left: 8px;
+}
+
+.only-info-actual-exercise {
+	margin-left: 20px;
+}
+
+#closed-exercise-card {
+	border-radius: 18px;
+	width: 90%;
+	padding: 10px;
+	box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 10px 7px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.title-chevron {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 13vh;
+}
+
+.cronometer {
+	background-color: #272d29;
+	color: #ffffff;
+	height: 30vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.cronometer p {
+	color: #ffffff;
+}
+
+.cronometer h1 {
+	font-size: 70px;
+	color: #ffffff;
+}

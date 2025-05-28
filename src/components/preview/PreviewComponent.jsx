@@ -46,7 +46,7 @@ function PreviewComponent({ name, number_excercises, img }) {
 							key={exercise.number}
 							name={exercise.name}
 							repetitions={exercise.repetitions}
-							series={exercise.series}
+							series={exercise.seriesTotales}
 							number={exercise.number}
 						/>
 					))}
