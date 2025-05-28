@@ -1,0 +1,56 @@
+/* #info-user-card {
+	border-radius: 18px;
+	width: fit-content;
+	padding: 16px;
+	box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.3);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 7px 7px 7px 0;
+	width: 300px;
+	align-items: center;
+	justify-content: left;
+	display: flex;
+	flex-direction: column;
+} */
+
+#info-user-card {
+	border-radius: 18px;
+	width: 320px;
+	padding: 16px;
+
+	box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.3);
+	background-color: transparent;
+	transition: outline 0.3s ease;
+	margin: 7px 7px 7px 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start; /* ALINEA A LA IZQUIERDA */
+	justify-content: flex-start;
+}
+
+.user-name p,
+.user-mail p,
+.user-edad p,
+.user-estatura p,
+.user-peso p {
+	margin-top: -4px;
+}
+
+.aditional-info {
+	display: flex;
+	flex-direction: row;
+}
+
+.user-edad,
+.user-estatura,
+.user-peso {
+	padding-right: 40px;
+}
+
+.user-name,
+.user-mail,
+.user-edad,
+.user-estatura,
+.user-peso {
+  padding-left: 16px;
+}
