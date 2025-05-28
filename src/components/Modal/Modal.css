@@ -1,0 +1,97 @@
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	background-color: white;
+	padding: 30px;
+	border-radius: 15px;
+	max-width: 400px;
+	width: 65%;
+	height: 360px;
+	text-align: center;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.last-modal-content {
+	background-color: white;
+	padding: 30px;
+	border-radius: 15px;
+	max-width: 400px;
+	width: 66%;
+	height: 360px;
+	text-align: center;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content p {
+	margin-bottom: 10px;
+	color: #272d29;
+}
+
+.modal-content h2 {
+	margin-top: 5px;
+}
+
+.modal-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+	margin-top: 20px;
+}
+
+.recomendations-info {
+	margin-top: 40px;
+	gap: 20px;
+}
+
+.last-recomendations-info {
+	margin-top: 15px;
+	gap: 20px;
+}
+
+.last-recomendations-info p {
+	margin-bottom: 40px;
+}
+
+.recomendations-info p {
+	margin-bottom: 40px;
+}
+
+#modal-cronometer {
+	font-size: 70px;
+	margin-top: 50px;
+}
+
+.heart-bpm-text {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 6px;
+}
+
+.last-modal-content button {
+	width: 100%;
+}
+
+.modal-content button {
+	width: 100%;
+}

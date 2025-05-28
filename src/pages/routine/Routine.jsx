@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { routines } from '../../data/routines';
+import Modal from '../../components/modal/Modal';
 import NavMenuRoutine from '../../components/navMenuRoutine/NavMenuRoutine';
 import './Routine.css';
 
@@ -11,6 +12,7 @@ function Routine() {
 	const [ejercicioActual, setEjercicioActual] = useState(0);
 	const [tiempo, setTiempo] = useState(0);
 	const [activo, setActivo] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 
 	const navigate = useNavigate();
 	navigate;
@@ -39,23 +41,19 @@ function Routine() {
 	};
 
 	const finalizarSerie = () => {
-		// Sumar una serie al ejercicio actual
 		setEjercicios((prevEjercicios) => {
 			const nuevosEjercicios = [...prevEjercicios];
 			const ejercicioActualizado = { ...nuevosEjercicios[ejercicioActual] };
 
-			// Incrementar series hechas
 			ejercicioActualizado.seriesHechas += 1;
 
-			// Verificar si se completaron todas las series
 			if (ejercicioActualizado.seriesHechas >= ejercicioActualizado.seriesTotales) {
 				ejercicioActualizado.completo = true;
 
-				// Pasar al siguiente ejercicio si no es el último
-				if (ejercicioActual < nuevosEjercicios.length - 1) {
+				if (ejercicioActual === nuevosEjercicios.length - 1) {
 					setTimeout(() => {
 						setEjercicioActual(ejercicioActual + 1);
-					}, 500); // Pequeño delay para mejor experiencia de usuario
+					}, 500);
 				}
 			}
 
@@ -63,12 +61,29 @@ function Routine() {
 			return nuevosEjercicios;
 		});
 
-		// Reiniciar el temporizador
 		reiniciarTiempo();
+		setShowModal(true);
+	};
+
+	const handleContinue = () => {
+		setShowModal(false);
+
+		const ejercicio = ejercicios[ejercicioActual];
+		if (ejercicio.seriesHechas >= ejercicio.seriesTotales) {
+			if (ejercicioActual < ejercicios.length - 1) {
+				setEjercicioActual((prev) => prev + 1);
+			}
+		}
+	};
+
+	const closeModal = () => {
+		setShowModal(false);
 	};
 
 	return (
 		<div id='Routine-container'>
+			{showModal && <Modal onClose={closeModal} onContinue={handleContinue} />}
+
 			<div className='header'>
 				<h1>RUTINA DE {routine.name}</h1>
 			</div>
