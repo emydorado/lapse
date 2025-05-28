@@ -1,9 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import './NavMenuRoutine.css';
 
-function NavMenuRoutine({ activo, onStart, onPause, finishSeries }) {
-	const navigate = useNavigate();
-
+function NavMenuRoutine({ activo, onStart, onPause, finishSeries, onOpenModal }) {
 	return (
 		<div id='navMenuRoutine-container'>
 			<div className='black-icon' onClick={onPause}>
@@ -60,8 +57,15 @@ function NavMenuRoutine({ activo, onStart, onPause, finishSeries }) {
 				<p className='small-text'>{!activo ? 'Empezar serie' : 'Terminar serie'}</p>
 			</div>
 
-			<div className='black-icon' onClick={() => navigate('/home')}>
+			<div
+				className='black-icon'
+				onClick={() => {
+					console.log('Click en bandera detectado');
+					onOpenModal();
+				}}
+			>
 				<div className='only-svg-black-icon'>
+					{/*icono bandera*/}
 					<svg xmlns='http://www.w3.org/2000/svg' width='34' height='34' fill='none' viewBox='0 0 24 24'>
 						<path
 							stroke='#ffffff'

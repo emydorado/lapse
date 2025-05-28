@@ -13,9 +13,9 @@ function Routine() {
 	const [tiempo, setTiempo] = useState(0);
 	const [activo, setActivo] = useState(false);
 	const [showModal, setShowModal] = useState(false);
+	const [showClosingModal, setShowClosingModal] = useState(false);
 
 	const navigate = useNavigate();
-	navigate;
 
 	useEffect(() => {
 		let intervalo = null;
@@ -80,6 +80,15 @@ function Routine() {
 		setShowModal(false);
 	};
 
+	const handleClosingModal = () => {
+		setShowClosingModal(false);
+		navigate('/home');
+	};
+
+	const handleGoBackClosingModal = () => {
+		setShowClosingModal(false);
+	};
+
 	return (
 		<div id='Routine-container'>
 			{showModal && <Modal onClose={closeModal} onContinue={handleContinue} />}
@@ -111,7 +120,7 @@ function Routine() {
 									<div className='title-chevron'>
 										<p id='exercise-title'>
 											<b>
-												{ej.number}. {ej.name}{' '}
+												{ej.number}. {ej.name}
 											</b>
 										</p>
 										<svg
@@ -211,7 +220,25 @@ function Routine() {
 					</div>
 				))}
 			</div>
-			<NavMenuRoutine activo={activo} onStart={iniciarTiempo} onPause={pausarTiempo} finishSeries={finalizarSerie} />
+
+			{showClosingModal && (
+				<div className='closing-modal-container'>
+					<div className='closing-modal-content'>
+						<h2>¿Desea salir de la rutina?</h2>
+						<button onClick={handleClosingModal}>Salir</button>
+						<button className='secondary-button' onClick={handleGoBackClosingModal}>
+							Cancelar
+						</button>
+					</div>
+				</div>
+			)}
+			<NavMenuRoutine
+				activo={activo}
+				onStart={iniciarTiempo}
+				onPause={pausarTiempo}
+				finishSeries={finalizarSerie}
+				onOpenModal={() => setShowClosingModal(true)}
+			/>
 		</div>
 	);
 }
