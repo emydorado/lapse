@@ -1,0 +1,69 @@
+#navMenuRoutine-container {
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-end;
+	margin: 0;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background-color: hsl(0, 0%, 100%);
+	padding: 0 0 2vh 0;
+	width: 100%;
+	z-index: 1000;
+}
+
+.black-icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12.5px;
+	padding: 0.3vh;
+}
+
+.big-black-icon {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12.5px;
+	padding: 0.3vh;
+	margin-left: 15px;
+}
+
+.secondary-icon.active p {
+	color: #7d9807;
+}
+
+.only-svg-big-black-icon {
+	background-color: #272d29;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	padding: 0;
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.only-svg-black-icon {
+	background-color: #272d29;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	padding: 10px;
+}
+
+.only-svg-big-black-icon svg {
+	padding-left: 6px;
+}
+
+#octagon-icon {
+	background-color: #272d29;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	padding: 15px;
+	padding-left: 18px;
+	padding-right: 18px;
+}

@@ -97,6 +97,7 @@ button {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 1.312rem;
 	width: 95%;
+	height: 40px;
 	color: #ffff;
 	border: none;
 	padding: 6px;
@@ -116,11 +117,15 @@ button:hover {
 	font-family: 'Bebas Neue', sans-serif;
 	font-size: 1.312rem;
 	width: 95%;
+	height: 40px;
 	color: #272d29;
 	border: solid 1.5px #272d29;
 	padding: 6px;
 	border-radius: 14px;
 	box-shadow: 0 4px 8px rgba(39, 45, 41, 0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 input {
