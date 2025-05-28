@@ -1,21 +1,23 @@
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
-import WebSocket from 'ws';
+import { WebSocketServer } from 'ws'; // ✅ Asegúrate que esto es correcto
 
 const port = new SerialPort({
-	path: 'COM6',
+	path: 'COM6', // Asegúrate de que sea el puerto correcto
 	baudRate: 9600,
 });
 
 const parser = port.pipe(new ReadlineParser({ delimiter: '\n' }));
 
-const wss = new WebSocket.Server({ port: 3001 });
+const wss = new WebSocketServer({ port: 3001 });
 
-parser.on('data', (data) => {
-	console.log('Dato recibido:', data);
-	wss.clients.forEach((client) => {
-		if (client.readyState === WebSocket.OPEN) {
-			client.send(data);
+wss.on('connection', (ws) => {
+	console.log('🔌 Cliente conectado');
+
+	parser.on('data', (data) => {
+		console.log('📡 Enviando dato:', data);
+		if (ws.readyState === ws.OPEN) {
+			ws.send(data);
 		}
 	});
 });
