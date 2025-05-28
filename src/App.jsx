@@ -10,6 +10,7 @@ import SelectRoutine from './pages/setUpRoutine/selectRoutine';
 import Routine from './pages/routine/Routine';
 import Profile from './pages/profile/Profile';
 import Preview from './pages/setUpRoutine/Preview';
+import SensorMonitor from './pages/sensor/sensor';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
 		<>
 			<BrowserRouter>
 				<Routes>
+					<Route path='/sensor' element={<SensorMonitor />} />
 					<Route path='/' element={<Welcome />} />
 					<Route path='/register' element={<Register />} />
 					<Route path='/login' element={<Login />} />
