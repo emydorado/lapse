@@ -6,241 +6,167 @@ import NavMenuRoutine from '../../components/navMenuRoutine/NavMenuRoutine';
 import './Routine.css';
 
 function Routine() {
-	const { id } = useParams();
-	const routine = routines.find((rec) => rec.id === parseInt(id));
-	const [ejercicios, setEjercicios] = useState(routine.excercises);
-	const [ejercicioActual, setEjercicioActual] = useState(0);
-	const [tiempo, setTiempo] = useState(0);
-	const [activo, setActivo] = useState(false);
-	const [showModal, setShowModal] = useState(false);
-	const [showClosingModal, setShowClosingModal] = useState(false);
+  const { id } = useParams();
+  const routine = routines.find((rec) => rec.id === parseInt(id));
+  const [ejercicios, setEjercicios] = useState(routine.excercises);
+  const [ejercicioActual, setEjercicioActual] = useState(0);
+  const [tiempo, setTiempo] = useState(0);
+  const [activo, setActivo] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showClosingModal, setShowClosingModal] = useState(false);
+  const [seriesDuration, setSeriesDuration] = useState(null);
+  const [bpm, setBpm] = useState(null)
 
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		let intervalo = null;
-		if (activo) {
-			intervalo = setInterval(() => {
-				setTiempo((t) => t + 1);
-			}, 1000);
-		}
-		return () => clearInterval(intervalo);
-	}, [activo]);
+  useEffect(() => {
+    let intervalo = null;
+    if (activo) {
+      intervalo = setInterval(() => {
+        setTiempo((t) => t + 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalo);
+  }, [activo]);
 
-	const iniciarTiempo = () => setActivo(true);
-	const pausarTiempo = () => setActivo(false);
-	const reiniciarTiempo = () => {
-		setTiempo(0);
-		setActivo(false);
-	};
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:3001'); // ← Ajusta si tu servidor es otro
 
-	const restartTime = (segundos) => {
-		const minutos = Math.floor(segundos / 60);
-		const segundosRestantes = segundos % 60;
-		return `${minutos.toString().padStart(2, '0')}:${segundosRestantes.toString().padStart(2, '0')}`;
-	};
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.bpm) {
+        setBpm(data.bpm);
+      }
+    };
 
-	const finalizarSerie = () => {
-		setEjercicios((prevEjercicios) => {
-			const nuevosEjercicios = [...prevEjercicios];
-			const ejercicioActualizado = { ...nuevosEjercicios[ejercicioActual] };
+    return () => socket.close();
+  }, []);
 
-			ejercicioActualizado.seriesHechas += 1;
+  const iniciarTiempo = () => setActivo(true);
+  const pausarTiempo = () => setActivo(false);
+  const reiniciarTiempo = () => {
+    setTiempo(0);
+    setActivo(false);
+  };
 
-			if (ejercicioActualizado.seriesHechas >= ejercicioActualizado.seriesTotales) {
-				ejercicioActualizado.completo = true;
+  const formatTime = (segundos) => {
+    const minutos = Math.floor(segundos / 60);
+    const segundosRestantes = segundos % 60;
+    return `${minutos.toString().padStart(2, '0')}:${segundosRestantes
+      .toString()
+      .padStart(2, '0')}`;
+  };
 
-				if (ejercicioActual === nuevosEjercicios.length - 1) {
-					setTimeout(() => {
-						setEjercicioActual(ejercicioActual + 1);
-					}, 500);
-				}
-			}
+  const finalizarSerie = () => {
+    const dur = tiempo;
+    setEjercicios((prev) => {
+      const copy = [...prev];
+      const ex = { ...copy[ejercicioActual] };
+      ex.seriesHechas += 1;
+      if (ex.seriesHechas >= ex.seriesTotales) ex.completo = true;
+      copy[ejercicioActual] = ex;
+      return copy;
+    });
+    reiniciarTiempo();
+    setSeriesDuration(dur);
+    setShowModal(true);
+  };
 
-			nuevosEjercicios[ejercicioActual] = ejercicioActualizado;
-			return nuevosEjercicios;
-		});
+  const handleContinue = () => {
+    setShowModal(false);
+    const ex = ejercicios[ejercicioActual];
+    if (ex.seriesHechas >= ex.seriesTotales && ejercicioActual < ejercicios.length - 1) {
+      setEjercicioActual((i) => i + 1);
+    }
+  };
 
-		reiniciarTiempo();
-		setShowModal(true);
-	};
+  const closeModal = () => setShowModal(false);
+  const handleClosingModal = () => {
+    setShowClosingModal(false);
+    navigate('/home');
+  };
+  const handleGoBackClosingModal = () => setShowClosingModal(false);
 
-	const handleContinue = () => {
-		setShowModal(false);
+  return (
+    <div id='Routine-container'>
+      {showModal && seriesDuration !== null && (
+        <Modal
+          onClose={closeModal}
+          onContinue={handleContinue}
+          seriesDuration={seriesDuration}
+          maxRestTime={120}
+		  bpm={bpm}
+        />
+      )}
 
-		const ejercicio = ejercicios[ejercicioActual];
-		if (ejercicio.seriesHechas >= ejercicio.seriesTotales) {
-			if (ejercicioActual < ejercicios.length - 1) {
-				setEjercicioActual((prev) => prev + 1);
-			}
-		}
-	};
+      <div className='header'>
+        <h1>RUTINA DE {routine.name}</h1>
+      </div>
 
-	const closeModal = () => {
-		setShowModal(false);
-	};
+      <div className='cronometer'>
+        <p className='medium-text'>Tiempo de serie</p>
+        <h1>{formatTime(tiempo)}</h1>
+        <p className='regular-text'>
+          <b>
+            {ejercicios[ejercicioActual]?.number}. {ejercicios[ejercicioActual]?.name}
+          </b>
+        </p>
+      </div>
 
-	const handleClosingModal = () => {
-		setShowClosingModal(false);
-		navigate('/home');
-	};
+      <div className='exercises-card-routine'>
+        <h2>Rutina</h2>
+        {ejercicios.map((ej, idx) => (
+          <div
+            key={ej.number}
+            className={`card-ejercicio ${idx === ejercicioActual ? 'activo' : 'inactivo'} ${
+              ej.completo ? 'completado' : ''
+            }`}
+          >
+            {idx === ejercicioActual ? (
+              <div id='card-actual-exercise'>
+                <div className='only-info-actual-exercise'>
+                  <h3>{ej.name}</h3>
+                  <p>Repeticiones: {ej.repeticiones}</p>
+                  <p>Series: {ej.seriesHechas}/{ej.seriesTotales}</p>
+                  <p className='tip'><b>Tip:</b> {ej.tip}</p>
+                </div>
+                <button className='secondary-button' id='watch-tutorial-btn'>
+                  Ver Tutorial
+                </button>
+              </div>
+            ) : (
+              <div id='closed-exercise-card'>
+                <h3>{ej.name}</h3>
+                <p>
+                  {ej.seriesHechas}/{ej.seriesTotales} series completadas
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
 
-	const handleGoBackClosingModal = () => {
-		setShowClosingModal(false);
-	};
+      {showClosingModal && (
+        <div className='closing-modal-container'>
+          <div className='closing-modal-content'>
+            <h2>¿Desea salir de la rutina?</h2>
+            <button onClick={handleClosingModal}>Salir</button>
+            <button className='secondary-button' onClick={handleGoBackClosingModal}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
 
-	return (
-		<div id='Routine-container'>
-			{showModal && <Modal onClose={closeModal} onContinue={handleContinue} />}
-
-			<div className='header'>
-				<h1>RUTINA DE {routine.name}</h1>
-			</div>
-			<div className='cronometer'>
-				<p className='medium-text'>Tiempo de serie</p>
-				<h1>{restartTime(tiempo)}</h1>
-				<p className='regular-text'>
-					<b>
-						{ejercicios[ejercicioActual]?.number}. {ejercicios[ejercicioActual]?.name}
-					</b>
-				</p>
-			</div>
-			<div className='exercises-card-routine'>
-				<h2>Rutina</h2>
-				{ejercicios.map((ej, index) => (
-					<div
-						key={ej.number}
-						className={`card-ejercicio ${index === ejercicioActual ? 'activo' : 'inactivo'} ${
-							ej.completo ? 'completado' : ''
-						}`}
-					>
-						{index === ejercicioActual ? (
-							<div id='card-actual-exercise'>
-								<div className='only-info-actual-exercise'>
-									<div className='title-chevron'>
-										<p id='exercise-title'>
-											<b>
-												{ej.number}. {ej.name}
-											</b>
-										</p>
-										<svg
-											className='w-6 h-6 text-gray-800 dark:text-white'
-											aria-hidden='true'
-											xmlns='http://www.w3.org/2000/svg'
-											width='44'
-											height='44'
-											fill='none'
-											viewBox='0 0 24 24'
-										>
-											<path
-												stroke='currentColor'
-												strokeLinecap='round'
-												strokeLinejoin='round'
-												strokeWidth='1.5'
-												d='m8 10 4 4 4-4'
-											/>
-										</svg>
-									</div>
-									<div className='actual-exercise-info-section'>
-										<div className='repetitions-section'>
-											<p className='regular-text'>Repeticiones</p>
-											<p className='regular-text'>
-												<b> {ej.repetitions}</b>
-											</p>
-										</div>
-										<div className='series-section'>
-											<p className='regular-text'>Series</p>
-											<p className='regular-text'>
-												<b>
-													{ej.seriesHechas}/{ej.seriesTotales}
-												</b>
-											</p>
-										</div>
-									</div>
-									<p className='regular-text'>
-										<b>Tip:</b> {ej.tip}
-									</p>
-								</div>
-								<button className='secondary-button' id='watch-tutorial-btn'>
-									Ver Tutorial
-									<svg
-										id='play-icon'
-										xmlns='http://www.w3.org/2000/svg'
-										width='34'
-										height='34'
-										fill='none'
-										viewBox='0 0 24 24'
-									>
-										<path
-											stroke='#272d29'
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											strokeWidth='1.5'
-											d='M8 18V6l8 6-8 6Z'
-										/>
-									</svg>
-								</button>
-							</div>
-						) : (
-							<div id='closed-exercise-card'>
-								<p
-									id='exercise-title'
-									style={{
-										color: ej.completo ? '#7d9807' : '#272d29',
-										opacity: ej.completo ? 100 : 0.5,
-									}}
-								>
-									<b>
-										{ej.number}. {ej.name}
-									</b>
-								</p>
-								<svg
-									className='w-6 h-6 text-gray-800 dark:text-white'
-									aria-hidden='true'
-									xmlns='http://www.w3.org/2000/svg'
-									width='44'
-									height='44'
-									fill='none'
-									viewBox='0 0 24 24'
-									style={{
-										color: ej.completo ? '#7d9807' : '#272d29',
-										opacity: ej.completo ? 100 : 0.5,
-									}}
-								>
-									<path
-										stroke='currentColor'
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth='1.5'
-										d='m16 14-4-4-4 4'
-									/>
-								</svg>
-							</div>
-						)}
-					</div>
-				))}
-			</div>
-
-			{showClosingModal && (
-				<div className='closing-modal-container'>
-					<div className='closing-modal-content'>
-						<h2>¿Desea salir de la rutina?</h2>
-						<button onClick={handleClosingModal}>Salir</button>
-						<button className='secondary-button' onClick={handleGoBackClosingModal}>
-							Cancelar
-						</button>
-					</div>
-				</div>
-			)}
-			<NavMenuRoutine
-				activo={activo}
-				onStart={iniciarTiempo}
-				onPause={pausarTiempo}
-				finishSeries={finalizarSerie}
-				onOpenModal={() => setShowClosingModal(true)}
-			/>
-		</div>
-	);
+      <NavMenuRoutine
+        activo={activo}
+        onStart={iniciarTiempo}
+        onPause={pausarTiempo}
+        finishSeries={finalizarSerie}
+        onOpenModal={() => setShowClosingModal(true)}
+      />
+    </div>
+  );
 }
 
 export default Routine;
