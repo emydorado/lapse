@@ -5,23 +5,81 @@ import Calculating from '../../components/states/Calculating';
 import './setUpRoutine.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import {auth, db} from '../../services/firebase/firebaseConfig'
+import { doc } from 'firebase/firestore';
+import { updateDoc } from 'firebase/firestore';
+
 
 function SetUpRoutine() {
 	const [step, setStep] = useState(0);
+	const [heartRate, setHeartRate] = useState(null);
+	const [userId, setUserId] = useState(null);
 	const navigate = useNavigate();
 
+	// Escuchar al usuario logueado
 	useEffect(() => {
-		const timers = [
-			setTimeout(() => setStep(1), 2000),
-			setTimeout(() => setStep(2), 4000),
-			setTimeout(() => setStep(3), 6000),
-		];
-
-		return () => timers.forEach(clearTimeout);
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			if (user) {
+				setUserId(user.uid);
+			} else {
+				console.warn('⚠ No hay usuario logueado');
+			}
+		});
+		return unsubscribe;
 	}, []);
 
+	useEffect(() => {
+		const socket = new WebSocket('ws://localhost:3001');
+
+		socket.onopen = () => {
+			console.log('✅ WebSocket conectado');
+			setStep(1);
+		};
+
+		socket.onmessage = async (event) => {
+			const value = parseInt(event.data, 10);
+			console.log('📡 Valor recibido:', value);
+
+			if (!isNaN(value) && value > 40 && value < 200) {
+				setHeartRate(value);
+				setStep(2);
+
+				// Guardar BPM en Firestore
+				if (userId) {
+					try {
+						const userRef = doc(db, 'users', userId);
+						await updateDoc(userRef, {
+							restbpm: value,
+							bpmTimestamp: new Date() // también guarda la fecha si quieres
+						});
+						console.log('✅ BPM guardado en Firestore');
+					} catch (error) {
+						console.error('❌ Error guardando BPM:', error);
+					}
+				} else {
+					console.warn('⚠ No se puede guardar, userId no disponible');
+				}
+
+				setTimeout(() => {
+					setStep(3);
+				}, 2000);
+			}
+		};
+
+		socket.onerror = (error) => {
+			console.error('❌ Error en WebSocket:', error);
+		};
+
+		socket.onclose = () => {
+			console.warn('⚠ WebSocket cerrado');
+		};
+
+		return () => socket.close();
+	}, [userId]);
+
 	const handleContinue = () => {
-		navigate('/selectRoutine');
+		navigate('/selectRoutine', { state: { heartRate } });
 	};
 
 	return (
@@ -50,15 +108,14 @@ function SetUpRoutine() {
 			<div id='setUpRoutine-container'>
 				<h2>1. Registra tu ritmo cardiaco </h2>
 				<p className='regular-text'>
-					Ve a la estación de toma de pulso para identificar tu ritmo cardiaco, esta información es la que tomamos de
-					base para personalizar tus tiempos de descanso en tu rutina.
+					Ve a la estación de toma de pulso para identificar tu ritmo cardiaco. Esta información la usamos para personalizar los tiempos de descanso de tu rutina.
 				</p>
 
 				{step === 1 && (
 					<>
 						<NotDetected />
 						<div className='indication-text'>
-							<p className='regular-text'>Coloca tu dedo indice en el sensor y mantenlo presionado.</p>
+							<p className='regular-text'>Coloca tu dedo índice en el sensor y mantenlo presionado.</p>
 						</div>
 					</>
 				)}
@@ -66,16 +123,15 @@ function SetUpRoutine() {
 					<>
 						<Calculating />
 						<div className='indication-text'>
-							<p className='regular-text'>Coloca tu dedo indice en el sensor y mantenlo presionado.</p>
+							<p className='regular-text'>Procesando lectura…</p>
 						</div>
 					</>
 				)}
 				{step === 3 && (
 					<>
-						<HeartRate />
+						<HeartRate bpm={heartRate} />
 						<div className='indication-text'>
 							<p className='regular-text'>Ya puedes continuar configurando tu rutina.</p>
-
 							<button className='continue-btn' onClick={handleContinue}>
 								Continuar
 							</button>

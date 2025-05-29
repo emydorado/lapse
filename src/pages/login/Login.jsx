@@ -35,7 +35,7 @@ function Login() {
       );
       
       
-      navigate('/onBoarding');
+      navigate('/home');
     } catch (error) {
       setError(error.message);
       console.error('Login error:', error);
