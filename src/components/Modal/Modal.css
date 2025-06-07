@@ -95,3 +95,28 @@
 .modal-content button {
 	width: 100%;
 }
+
+
+/* Modal.css - Adiciones */
+.bpm-info, .bpm-stats {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.bpm-info p, .bpm-stats p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.stats-container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.stats-container p {
+  margin: 8px 0;
+}

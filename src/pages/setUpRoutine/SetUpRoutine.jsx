@@ -9,13 +9,15 @@ import { onAuthStateChanged } from 'firebase/auth';
 import {auth, db} from '../../services/firebase/firebaseConfig'
 import { doc } from 'firebase/firestore';
 import { updateDoc } from 'firebase/firestore';
-
+import { useDispatch } from 'react-redux';
+import { setHeartRate } from '../../redux/hrfslice';
 
 function SetUpRoutine() {
 	const [step, setStep] = useState(0);
-	const [heartRate, setHeartRate] = useState(null);
 	const [userId, setUserId] = useState(null);
+	const [localHeartRate, setLocalHeartRate] = useState(null);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	// Escuchar al usuario logueado
 	useEffect(() => {
@@ -42,23 +44,22 @@ function SetUpRoutine() {
 			console.log('📡 Valor recibido:', value);
 
 			if (!isNaN(value) && value > 40 && value < 200) {
-				setHeartRate(value);
+				setLocalHeartRate(value);
+				dispatch(setHeartRate(value)); // ✅ Actualiza el estado global de Redux
 				setStep(2);
 
-				// Guardar BPM en Firestore
+				// Guardar en Firestore
 				if (userId) {
 					try {
 						const userRef = doc(db, 'users', userId);
 						await updateDoc(userRef, {
 							restbpm: value,
-							bpmTimestamp: new Date() // también guarda la fecha si quieres
+							bpmTimestamp: new Date()
 						});
 						console.log('✅ BPM guardado en Firestore');
 					} catch (error) {
 						console.error('❌ Error guardando BPM:', error);
 					}
-				} else {
-					console.warn('⚠ No se puede guardar, userId no disponible');
 				}
 
 				setTimeout(() => {
@@ -76,10 +77,10 @@ function SetUpRoutine() {
 		};
 
 		return () => socket.close();
-	}, [userId]);
+	}, [userId, dispatch]);
 
 	const handleContinue = () => {
-		navigate('/selectRoutine', { state: { heartRate } });
+		navigate('/selectRoutine', { state: { heartRate: localHeartRate } });
 	};
 
 	return (
@@ -129,7 +130,7 @@ function SetUpRoutine() {
 				)}
 				{step === 3 && (
 					<>
-						<HeartRate bpm={heartRate} />
+						<HeartRate bpm={localHeartRate} />
 						<div className='indication-text'>
 							<p className='regular-text'>Ya puedes continuar configurando tu rutina.</p>
 							<button className='continue-btn' onClick={handleContinue}>
