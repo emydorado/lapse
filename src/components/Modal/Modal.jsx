@@ -9,110 +9,85 @@ import { getAuth } from 'firebase/auth';
 function Modal({ onContinue, seriesDuration, currentBPM }) {
   const [step, setStep] = useState(1);
   const [normalizedBPM, setNormalizedBPM] = useState(null);
-
-  const [elapsed, setElapsed] = useState(0); // El contador de tiempo
+  const [elapsed, setElapsed] = useState(0);
   const [decreaseRate, setDecreaseRate] = useState(null);
-  const [restAdjustment, setRestAdjustment] = useState(0);
+  const [capturedInitialBPM, setCapturedInitialBPM] = useState(null);
+  const [extraTime, setExtraTime] = useState(0);
+  const [showExtraTime, setShowExtraTime] = useState(false);
+  const currentBPMRef = useRef(currentBPM);
+  const [hasValidBPM, setHasValidBPM] = useState(false);
+  const [minElapsedForCalculation, setMinElapsedForCalculation] = useState(false);
+  const [isCalculatingExtra, setIsCalculatingExtra] = useState(false);
 
-  const [capturedInitialBPM, setCapturedInitialBPM] = useState(null); // La FC post-esfuerzo
-
-  const currentBPMRef = useRef(currentBPM); // Ref para el BPM actual del sensor
-
-  // Actualiza el ref cada vez que currentBPM cambia
+  // Actualiza el ref y verifica BPM válido
   useEffect(() => {
     currentBPMRef.current = currentBPM;
+    if (typeof currentBPM === 'number' && currentBPM > 0) {
+      setHasValidBPM(true);
+    }
   }, [currentBPM]);
 
-  // PRIMER useEffect: Cargar FC Normalizada (se ejecuta solo una vez al montar)
+  // Cargar FC Normalizada desde Firebase
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser;
-    if (!user) {
-      console.log('Usuario no autenticado. Usando FC Normalizada por defecto (90 BPM).');
-      setNormalizedBPM(90); // Fallback si no hay usuario
-      return;
-    }
+    const defaultBPM = 90;
 
-    const db = getFirestore();
-    const docRef = doc(db, 'users', user.uid);
-    getDoc(docRef)
-      .then((docSnap) => {
+    const loadNormalizedBPM = async () => {
+      if (!user) {
+        console.log('Usuario no autenticado. Usando FC Normalizada por defecto.');
+        setNormalizedBPM(defaultBPM);
+        return;
+      }
+
+      try {
+        const db = getFirestore();
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+        
         if (docSnap.exists() && docSnap.data().restbpm) {
           const restbpm = docSnap.data().restbpm;
           const calculatedNormalized = Math.floor(restbpm + restbpm * 0.1);
           setNormalizedBPM(calculatedNormalized);
-          console.log('FC en reposo:', restbpm, 'FC Normalizada (calculada):', calculatedNormalized);
         } else {
-          console.log('No se encontró FC en reposo para el usuario o documento no existe. Usando FC Normalizada por defecto (90 BPM).');
-          setNormalizedBPM(90); // Fallback si no hay restbpm en Firestore
+          setNormalizedBPM(defaultBPM);
         }
-      })
-      .catch((error) => {
-        console.error('Error al obtener FC en reposo desde Firebase:', error);
-        setNormalizedBPM(90); // Fallback en caso de error de Firebase
-      });
-  }, []); // Dependencia vacía para que se ejecute solo al montar
+      } catch (error) {
+        console.error('Error al obtener FC en reposo:', error);
+        setNormalizedBPM(defaultBPM);
+      }
+    };
 
-  // SEGUNDO useEffect: Manejar la lógica de los pasos y el temporizador
+    loadNormalizedBPM();
+  }, []);
+
+  // Manejar transición entre pasos
   useEffect(() => {
     let interval;
 
-    // --- Lógica de transición de Step 1 a Step 2 ---
-    // Esta sección se ejecuta cada vez que 'step', 'normalizedBPM' o 'capturedInitialBPM' cambian.
-    // También se activará si currentBPMRef.current cambia mientras step es 1.
-    if (step === 1) {
-      console.log(`DEBUG (Step 1 Eval): currentBPM=${currentBPMRef.current}, normalizedBPM=${normalizedBPM}`);
-      if (currentBPMRef.current === null || currentBPMRef.current === undefined) {
-        console.log('DEBUG (Step 1): currentBPMRef.current es null/undefined.');
-      }
-      if (typeof currentBPMRef.current === 'number' && currentBPMRef.current <= 0) {
-        console.log('DEBUG (Step 1): currentBPMRef.current es <= 0.');
-      }
-      if (normalizedBPM === null) {
-        console.log('DEBUG (Step 1): normalizedBPM es null.');
-      }
+    // Paso 1 → Paso 2
+    if (step === 1 && hasValidBPM && normalizedBPM !== null) {
+      setCapturedInitialBPM(currentBPMRef.current);
+      setElapsed(0);
+      setStep(2);
     }
 
-    // CONDICIÓN PRINCIPAL PARA PASAR A STEP 2:
-    // Captura el primer BPM válido (mayor a 0) como FC post-esfuerzo,
-    // y solo si normalizedBPM ya está disponible.
-    if (step === 1 && typeof currentBPMRef.current === 'number' && currentBPMRef.current > 0 && normalizedBPM !== null) {
-        setCapturedInitialBPM(currentBPMRef.current);
-        setElapsed(0); // <--- REINICIA EL CONTADOR DE TIEMPO AQUÍ
-        setStep(2);
-        console.log('TRANSICIÓN A STEP 2: Primer BPM capturado (initialBpm):', currentBPMRef.current, 'Contador de tiempo reiniciado.');
-    }
-
-    // --- Lógica del temporizador y cálculo de recuperación (Step 2) ---
-    // Solo inicia el temporizador si estamos en Step 2 y ya tenemos todos los datos necesarios.
+    // Temporizador para Paso 2
     if (step === 2 && normalizedBPM !== null && capturedInitialBPM !== null) {
-      console.log('DEBUG (Step 2 Active): Iniciando temporizador.');
       interval = setInterval(() => {
         setElapsed((prevElapsed) => {
           const newElapsed = prevElapsed + 1;
-          // console.log('Tiempo transcurrido:', newElapsed, 'segundos. Current BPM (ref):', currentBPMRef.current); // Descomentar para debugging intenso
 
-          // Calcular la velocidad de disminución a los 15 segundos exactos
+          // Cálculo de velocidad a los 15 segundos
           if (newElapsed === 15) {
             const initial = capturedInitialBPM;
             const current = currentBPMRef.current;
 
             if (typeof initial === 'number' && initial > 0 &&
                 typeof current === 'number' && current >= 0) {
-                const difference = initial - current;
-                const minutes = 15 / 60;
-                const rate = difference / minutes;
-
-                setDecreaseRate(rate);
-                console.log('CALCULO DE VELOCIDAD A 15s: Initial BPM (FCpost_inmediata):', initial, 'Current BPM (FCpost_ajustada):', current);
-                console.log('Velocidad de disminución calculada:', rate.toFixed(1), 'BPM/min.');
-
-                if (rate < 20) {
-                  setRestAdjustment(0.2);
-                  console.log('Ajuste de descanso: Velocidad < 20. Aumentado en 20%.');
-                }
-            } else {
-                console.warn('ADVERTENCIA: Valores de BPM inválidos para calcular la velocidad (en t=15s): initial=', initial, 'current=', current);
+              const rate = (initial - current) / 0.25; // 15s = 0.25min
+              setDecreaseRate(rate);
+              setMinElapsedForCalculation(true);
             }
           }
           return newElapsed;
@@ -120,37 +95,62 @@ function Modal({ onContinue, seriesDuration, currentBPM }) {
       }, 1000);
     }
 
-    // Función de limpieza para detener el temporizador cuando el componente se desmonte
-    // o cuando 'step', 'normalizedBPM' o 'capturedInitialBPM' cambien.
-    return () => {
-      console.log('DEBUG: Limpiando intervalo.');
-      clearInterval(interval);
-    };
-  }, [step, normalizedBPM, capturedInitialBPM]); // Dependencias que reinician este useEffect (y el setInterval)
+    return () => clearInterval(interval);
+  }, [step, normalizedBPM, capturedInitialBPM, hasValidBPM]);
 
-  // TERCER useEffect: Verificar si se alcanzó la FC normalizada para pasar al Step 3
-  // Solo se activa cuando 'step', 'currentBPM', 'normalizedBPM' o 'elapsed' cambian.
+  // Paso 2 → Paso 3 (con tiempo extra si es necesario)
   useEffect(() => {
-    // Solo si estamos en Step 2 y tenemos todos los datos necesarios
-    if (step === 2 && currentBPM !== null && currentBPM !== undefined && typeof currentBPM === 'number' && normalizedBPM !== null) {
-      // Condición para pasar a Step 3:
-      // 1. Han transcurrido AL MENOS 15 segundos.
-      // 2. La FC actual es menor o igual a la FC normalizada.
-      if (elapsed >= 15 && currentBPM <= normalizedBPM) {
-        setStep(3);
-        console.log('TRANSICIÓN A STEP 3: FC Normalizada alcanzada Y Mínimo de 15s cumplido. Recuperación completa.');
+    if (step === 2 && hasValidBPM && normalizedBPM !== null && minElapsedForCalculation) {
+      if (currentBPM <= normalizedBPM && !isCalculatingExtra) {
+        const timeToRecover = elapsed;
+        
+        // Calcular tiempo extra si la velocidad fue < 20 BPM/min
+        if (decreaseRate !== null && decreaseRate < 20) {
+          const calculatedExtra = Math.max(1, Math.round(timeToRecover * 0.2)); // Asegurar mínimo 1 segundo
+          setExtraTime(calculatedExtra);
+          setShowExtraTime(true);
+          setIsCalculatingExtra(true);
+          
+          // Extender el tiempo de forma controlada
+          setElapsed(prev => {
+            const newElapsed = prev + calculatedExtra;
+            return newElapsed > 600 ? 600 : newElapsed; // Limitar a 10 minutos máximo
+          });
+        } else {
+          setStep(3);
+        }
       }
     }
-  }, [step, currentBPM, normalizedBPM, elapsed]); // Dependencias: step, currentBPM, normalizedBPM, elapsed
+  }, [step, currentBPM, normalizedBPM, elapsed, decreaseRate, hasValidBPM, minElapsedForCalculation, isCalculatingExtra]);
 
-  // Función para formatear el tiempo
+  // Manejo del tiempo extra
+  useEffect(() => {
+    let interval;
+    
+    if (showExtraTime && step === 2 && isCalculatingExtra) {
+      interval = setInterval(() => {
+        setElapsed(prev => {
+          if (prev >= 15 + extraTime) { // Asegurar que pasen los 15s + extra
+            setStep(3);
+            setIsCalculatingExtra(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [showExtraTime, extraTime, step, isCalculatingExtra]);
+
   const formatTime = (segundos) => {
-    const minutos = Math.floor(segundos / 60);
-    const segundosRestantes = segundos % 60;
+    if (isNaN(segundos)) return '00:00';
+    
+    const minutos = Math.floor(Math.max(0, segundos) / 60);
+    const segundosRestantes = Math.max(0, segundos) % 60;
     return `${minutos.toString().padStart(2, '0')}:${segundosRestantes.toString().padStart(2, '0')}`;
   };
 
-  // Renderizado del componente (la interfaz de usuario)
   return (
     <>
       {step === 1 && (
@@ -165,6 +165,9 @@ function Modal({ onContinue, seriesDuration, currentBPM }) {
                 </svg>
                 <h2>{currentBPM || '--'} BPM</h2>
               </div>
+              {!hasValidBPM && currentBPM !== null && (
+                <p className='waiting-message'>Esperando datos válidos del sensor...</p>
+              )}
             </div>
           </div>
         </div>
@@ -182,11 +185,14 @@ function Modal({ onContinue, seriesDuration, currentBPM }) {
             </div>
             <div className='recovery-info'>
               {capturedInitialBPM && <p>FC Inicial: {capturedInitialBPM} BPM</p>}
+              {normalizedBPM && <p>FC Objetivo: {normalizedBPM} BPM</p>}
               {decreaseRate !== null && (
                 <p>Velocidad recuperación: {decreaseRate.toFixed(1)} BPM/min</p>
               )}
-              {restAdjustment > 0 && (
-                <p className='adjustment-warning'>Tiempo de descanso aumentado en 20%</p>
+              {showExtraTime && (
+                <p className='adjustment-warning'>
+                  Aplicando tiempo extra: {formatTime(extraTime)} (20%)
+                </p>
               )}
             </div>
           </div>
@@ -204,7 +210,17 @@ function Modal({ onContinue, seriesDuration, currentBPM }) {
               </div>
               <div className='stat-item'>
                 <span>Tiempo descanso:</span>
-                <span>{formatTime(elapsed)}</span>
+                <span>{formatTime(Math.min(elapsed, 15))}</span>
+              </div>
+              {extraTime > 0 && (
+                <div className='stat-item extra-time'>
+                  <span>Tiempo extra (20%):</span>
+                  <span>+{formatTime(extraTime)}</span>
+                </div>
+              )}
+              <div className='stat-item total-time'>
+                <span>Tiempo total:</span>
+                <span>{formatTime(Math.min(elapsed, 15 + extraTime))}</span>
               </div>
             </div>
             <button className='primary-button' onClick={onContinue}>

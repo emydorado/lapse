@@ -27,7 +27,7 @@ function Routine() {
   const [showClosingModal, setShowClosingModal] = useState(false);
   const [seriesDuration, setSeriesDuration] = useState(null);
   const [inputRepeticiones, setInputRepeticiones] = useState('');
-  const [bpm, setBpm] = useState(null); // bpm inicial es null
+  const [bpm, setBpm] = useState(null);
 
   const navigate = useNavigate();
 
@@ -35,11 +35,16 @@ function Routine() {
     let intervalo = null;
     if (activo && tiempo > 0) {
       intervalo = setInterval(() => {
-        setTiempo((t) => t - 1);
+        setTiempo((t) => {
+          if (t <= 1) { // Cuando quede 1 segundo
+            clearInterval(intervalo);
+            setActivo(false);
+            finalizarSerieAutomatica();
+            return 0;
+          }
+          return t - 1;
+        });
       }, 1000);
-    } else if (tiempo === 0 && activo) {
-      setActivo(false);
-      finalizarSerie();
     }
     return () => clearInterval(intervalo);
   }, [activo, tiempo]);
@@ -49,14 +54,8 @@ function Routine() {
 
     socket.onmessage = (event) => {
       const parsedBpm = parseFloat(event.data);
-      if (!isNaN(parsedBpm) && parsedBpm > 0) { // Asegúrate de que sea un número válido y > 0
-        setBpm(parsedBpm);
-      } else {
-        // Opcional: si el sensor envía 0 o NaN, puedes decidir qué hacer.
-        // Podrías setear bpm a 0 si 0 es un valor significativo para ti,
-        // o a null si no es un valor real.
-        // Por ahora, solo actualizamos si es > 0.
-        // setBpm(null); // O setBpm(0) si 0 es una lectura válida pero de reposo
+      if (!isNaN(parsedBpm)) {
+        setBpm(parsedBpm > 0 ? parsedBpm : null);
       }
     };
 
@@ -68,7 +67,9 @@ function Routine() {
     setActivo(true);
   };
   
-  const pausarTiempo = () => setActivo(false);
+  const pausarTiempo = () => {
+    setActivo(false);
+  };
   
   const reiniciarTiempo = () => {
     setTiempo(60);
@@ -81,66 +82,67 @@ function Routine() {
     return `${minutos.toString().padStart(2, '0')}:${segundosRestantes.toString().padStart(2, '0')}`;
   };
 
-  const finalizarSerie = () => {
-    const dur = 60 - tiempo;
+  const finalizarSerieAutomatica = () => {
+    const dur = 60; // Tiempo completo (60 segundos)
     const repeticiones = parseInt(inputRepeticiones) || 0;
     
-    setEjercicios((prev) => {
-      const copy = [...prev];
-      const ex = { 
-        ...copy[ejercicioActual],
-        seriesHechas: copy[ejercicioActual].seriesHechas + 1,
+    setEjercicios(prev => prev.map((ex, i) => 
+      i === ejercicioActual ? {
+        ...ex,
+        seriesHechas: ex.seriesHechas + 1,
         repeticionesHechas: repeticiones
-      };
-      copy[ejercicioActual] = ex;
-      return copy;
-    });
-    
+      } : ex
+    ));
+
+    setSeriesDuration(dur);
     reiniciarTiempo();
     setInputRepeticiones('');
-    setSeriesDuration(dur);
-    // ** SOLO MOSTRAR EL MODAL SI TENEMOS UN BPM VÁLIDO **
-    if (typeof bpm === 'number' && bpm > 0) {
-        setShowModal(true);
-    } else {
-        // Manejar el caso donde no hay BPM válido al finalizar la serie.
-        // Podrías mostrar una alerta al usuario, o forzar el avance, o esperar un momento.
-        // Por ahora, lo dejaré para que lo decidas. Una opción es simplemente avanzar
-        // si no hay BPM y el usuario puede continuar.
-        console.warn("No se pudo obtener un BPM válido al finalizar la serie. Avanzando sin monitoreo de recuperación.");
-        handleContinue(); // O alguna otra acción por defecto
-    }
+    setShowModal(true);
   };
 
-  const handleContinue = () => {
+  const finalizarSerie = () => {
+    const dur = 60 - tiempo; // Tiempo restante
+    const repeticiones = parseInt(inputRepeticiones) || 0;
+    
+    setEjercicios(prev => prev.map((ex, i) => 
+      i === ejercicioActual ? {
+        ...ex,
+        seriesHechas: ex.seriesHechas + 1,
+        repeticionesHechas: repeticiones
+      } : ex
+    ));
+
+    setSeriesDuration(dur);
+    reiniciarTiempo();
+    setInputRepeticiones('');
+    setShowModal(true);
+  };
+
+  const handleContinueFromModal = () => {
     setShowModal(false);
+  };
+
+  const handleNextExercise = () => {
+    reiniciarTiempo();
+    setInputRepeticiones('');
     if (ejercicioActual < ejercicios.length - 1) {
       setEjercicioActual((i) => i + 1);
-    } else {
-      navigate('/home');
     }
   };
 
-  const closeModal = () => setShowModal(false);
-  const handleClosingModal = () => {
-    setShowClosingModal(false);
-    navigate('/home');
-  };
-  const handleGoBackClosingModal = () => setShowClosingModal(false);
+  const isLastExercise = ejercicioActual === ejercicios.length - 1;
 
   return (
     <div id='Routine-container'>
-      {/* ** SOLO RENDERIZAR EL MODAL SI showModal ES TRUE Y BPM ES VÁLIDO ** */}
-      {showModal && seriesDuration !== null && typeof bpm === 'number' && bpm > 0 && (
+      {showModal && (
         <Modal
-          onClose={closeModal}
-          onContinue={handleContinue}
+          onClose={() => setShowModal(false)}
+          onContinue={handleContinueFromModal}
           seriesDuration={seriesDuration}
           maxRestTime={120}
-          currentBPM={bpm} // currentBPM ya es un número válido aquí
+          currentBPM={bpm}
         />
       )}
-      {/* Si showModal es true pero bpm no es válido, el modal no se mostrará con el error */}
 
       <div className='header'>
         <h1>RUTINA DE {routine.name}</h1>
@@ -153,7 +155,7 @@ function Routine() {
           <b>
             {ejercicios[ejercicioActual]?.number}. {ejercicios[ejercicioActual]?.name}
           </b>
-</p>
+        </p>
       </div>
 
       <div className='exercises-card-routine'>
@@ -204,8 +206,8 @@ function Routine() {
         <div className='closing-modal-container'>
           <div className='closing-modal-content'>
             <h2>¿Desea salir de la rutina?</h2>
-            <button onClick={handleClosingModal}>Salir</button>
-            <button className='secondary-button' onClick={handleGoBackClosingModal}>
+            <button onClick={() => navigate('/home')}>Salir</button>
+            <button className='secondary-button' onClick={() => setShowClosingModal(false)}>
               Cancelar
             </button>
           </div>
@@ -217,7 +219,9 @@ function Routine() {
         onStart={iniciarTiempo}
         onPause={pausarTiempo}
         finishSeries={finalizarSerie}
-        onOpenModal={() => setShowClosingModal(true)}
+        onNextExercise={handleNextExercise}
+        isLastExercise={isLastExercise}
+        onFinishRoutine={() => setShowClosingModal(true)}
       />
     </div>
   );
